@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/MegaMindInKZ/task-techno.git/cache"
 	"github.com/MegaMindInKZ/task-techno.git/config"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -20,6 +21,9 @@ func main() {
 func init() {
 	Router = mux.NewRouter().StrictSlash(true)
 	routes()
+	cache.LocalCache = cache.NewCache(1000)
+	cache.SetUp()
+
 	Server = &http.Server{
 		Handler:      Router,
 		Addr:         "127.0.0.1:8000",

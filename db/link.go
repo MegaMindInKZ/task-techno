@@ -1,9 +1,5 @@
 package db
 
-import (
-	"errors"
-)
-
 type Link struct {
 	ID          int    `json:"id"`
 	ActiveLink  string `json:"active_link"`
@@ -68,8 +64,11 @@ func GetLinkByID(id int) (link Link, err error) {
 	return
 }
 
-func getLinks() (links []Link, err error) {
-	rows, err := DB.Query("SELECT ID, ACTIVE_LINK, HISTORY_LINK FROM LINKS")
+func GetLinksWithPagination(pageNumber int) (links []Link, err error) {
+	rows, err := DB.Query(
+		"SELECT ID, ACTIVE_LINK, HISTORY_LINK FROM LINKS LIMIT $1 OFFSET $2", paginationSize,
+		(pageNumber-1)*paginationSize,
+	)
 	if err != nil {
 		return
 	}
@@ -81,19 +80,4 @@ func getLinks() (links []Link, err error) {
 		links = append(links, link)
 	}
 	return
-}
-
-func GetLinksWithPagination(pageNumber int) (links []Link, err error) {
-	links, err = getLinks()
-	if err != nil {
-		return nil, errors.New("Internal server error")
-	}
-
-	if len(links) < (pageNumber-1)*paginationSize {
-		return nil, errors.New("Invalid page number")
-	}
-	if len(links) < pageNumber*paginationSize {
-		return links[(pageNumber-1)*paginationSize:], nil
-	}
-	return links[(pageNumber-1)*paginationSize : pageNumber*paginationSize], nil
 }
