@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	host     = "localhost"
+	host     = "db"
 	port     = 5432
 	user     = "postgres"
 	password = "200103287sdu"
@@ -26,13 +26,19 @@ func init() {
 
 func initDB() {
 	psqlInfo := fmt.Sprintf(
-		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname,
+		"postgres://%v:%v@%v:%v/%v?sslmode=disable",
+		user,
+		password,
+		host,
+		port,
+		dbname,
 	)
 	var err error
 	db.DB, err = sql.Open("postgres", psqlInfo)
 
 	if err != nil {
 		log.Fatal(err)
+		os.Exit(0)
 	}
 
 	st, ioErr := ioutil.ReadFile("setup.sql")
@@ -46,7 +52,7 @@ func initDB() {
 }
 
 func insert() {
-	jsonFile, err := os.Open("links.json")
+	jsonFile, err := os.Open("./links.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,7 +65,6 @@ func insert() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	for _, link := range links {
 		link.Create()
 	}

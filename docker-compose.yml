@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./
+    command: ./task-techno
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - backend
+
+  db:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - .:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "200103287sdu"
+      POSTGRES_DB: "link_service"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    ports:
+      - "5436:5432"
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
