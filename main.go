@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/MegaMindInKZ/task-techno.git/cache"
 	"github.com/MegaMindInKZ/task-techno.git/config"
-	"github.com/MegaMindInKZ/task-techno.git/db"
 	"github.com/gorilla/mux"
 	"net/http"
 	"time"
@@ -15,7 +14,6 @@ var Server *http.Server
 
 func main() {
 	defer config.End()
-	fmt.Println(db.GetLinksWithPagination(1))
 	fmt.Println(Server.ListenAndServe())
 }
 
@@ -27,7 +25,7 @@ func init() {
 
 	Server = &http.Server{
 		Handler:      Router,
-		Addr:         "127.0.0.1:8000",
+		Addr:         "0.0.0.0:8000",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
