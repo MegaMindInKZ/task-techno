@@ -41,17 +41,19 @@ func initDB() {
 		os.Exit(0)
 	}
 
-	st, ioErr := ioutil.ReadFile("setup.sql")
+}
+
+func insert() {
+	st, ioErr := ioutil.ReadFile("links_table.sql")
 	if ioErr != nil {
-		fmt.Println("Cannot read setup.sql")
+		fmt.Println("Cannot read links_table.sql")
 		os.Exit(1)
 	}
 	if _, err := db.DB.Exec(string(st)); err != nil {
 		fmt.Println(err)
+		return
 	}
-}
 
-func insert() {
 	jsonFile, err := os.Open("./links.json")
 	if err != nil {
 		log.Fatal(err)
